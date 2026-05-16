@@ -28,10 +28,12 @@ export const runAi = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("AI Gateway not configured");
+    const apiKey = process.env.LLM_API_KEY;
+    if (!apiKey) throw new Error("AI Gateway not configured (set LLM_API_KEY)");
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const gateway = process.env.LLM_GATEWAY_URL || "https://api.openai.com/v1/chat/completions";
+
+    const res = await fetch(gateway, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
